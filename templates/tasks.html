@@ -1,0 +1,32 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="page-title">📝 Task Manager</h1>
+
+    <!-- Add New Task -->
+    <form action="/add_task" method="POST" style="margin-bottom:20px;">
+        <input type="text" name="task" placeholder="Enter new task..." required>
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Task List -->
+    <ul class="task-list">
+        {% for task in tasks %}
+        <li>
+            <span style="text-decoration: {% if task['is_complete'] %}line-through{% endif %};">
+                {{ task['task_name'] }}
+            </span>
+
+            <div class="task-btns">
+                {% if not task['is_complete'] %}
+                <a href="/complete_task/{{ task['id'] }}">✔ Complete</a>
+                {% endif %}
+
+                <a href="/edit_task/{{ task['id'] }}">🖊 Edit</a>
+                <a href="/delete_task/{{ task['id'] }}">❌ Delete</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

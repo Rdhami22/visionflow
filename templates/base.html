@@ -5,23 +5,28 @@
     <title>VisionFlow</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <header>
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="VisionFlow Logo" height="50">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="VisionFlow" height="45">
+
         <nav>
             <a href="{{ url_for('dashboard') }}">Dashboard</a>
             <a href="{{ url_for('tasks') }}">Tasks</a>
             <a href="{{ url_for('rewards') }}">Rewards</a>
+            <a href="{{ url_for('quiz') }}">Quiz</a>
+            <a href="{{ url_for('jokes') }}">Jokes</a>
             <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('logout') }}" style="color:#7a2100;">Logout</a>
         </nav>
     </header>
-    
+
     <main>
         {% block content %}{% endblock %}
     </main>
-    
+
     <footer>
-        <p>Made with ❤️ by Your Name</p>
+        VisionFlow © 2025 — Built for Productivity & Aesthetic ✦
     </footer>
 </body>
 </html>

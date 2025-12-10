@@ -1,0 +1,21 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container" style="text-align:center;">
+    <h1 class="page-title">🧠 Quick Quiz Boost</h1>
+
+    <h3>How many hours of productive work is ideal daily?</h3>
+
+    <button onclick="check(1)">2 hours</button>
+    <button onclick="check(2)">4–6 hours</button>
+    <button onclick="check(3)">12 hours</button>
+
+    <p id="result" style="margin-top:20px;font-size:22px;"></p>
+</div>
+
+<script>
+    function check(a) {
+        if (a === 2) { document.getElementById("result").innerHTML = "Correct 🎉 +5 points (add later)"; }
+        else { document.getElementById("result").innerHTML = "Try again ✍"; }
+    }
+</script>
+{% endblock %}

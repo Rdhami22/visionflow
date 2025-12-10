@@ -1,0 +1,18 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container" style="text-align:center;">
+    <h1 class="page-title">🎁 Rewards Center</h1>
+
+    <h2>Your Points: <span style="color:#a06a39;font-size:30px;">{{ points }}</span></h2>
+
+    <div style="width:60%;margin:auto;background:#fff;border-radius:10px;padding:20px;">
+        <h3>Reward Unlock at 100 pts</h3>
+
+        {% if points >= 100 %}
+        <button onclick="alert('Reward redeemed 🎉')" style="margin-top:10px;">Redeem Reward</button>
+        {% else %}
+        <p style="opacity:.7;">Earn {{ 100 - points }} more points ✨</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

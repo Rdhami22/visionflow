@@ -1,0 +1,21 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="settings-card">
+
+    <h1 class="page-title" style="text-align:center;">⚙ Settings</h1>
+
+    <h3>Change Password</h3>
+    <form action="/change_password" method="POST">
+        <input type="password" name="old" placeholder="Current Password" required><br>
+        <input type="password" name="new" placeholder="New Password" required><br>
+        <button>Update Password</button>
+    </form>
+
+    <hr style="margin:25px 0;">
+
+    <h3>Profile Picture (Coming Soon)</h3>
+    <img class="user-pfp" src="/static/images/default_pfp.jpg">
+    <button disabled style="opacity:.6;">Upload Not Enabled Yet</button>
+
+</div>
+{% endblock %}
