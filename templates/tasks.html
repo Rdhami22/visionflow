@@ -4,6 +4,15 @@
 {% block content %}
 <h1>Your Tasks</h1>
 
+<!-- 🔍 SEARCH BAR -->
+<form method="GET" action="/tasks" style="margin-bottom: 1.5rem;">
+    <input type="text"
+           name="q"
+           placeholder="Search tasks..."
+           value="{{ request.args.get('q', '') }}">
+    <button class="btn">Search</button>
+</form>
+
 <div class="card">
     <form action="/tasks/add" method="POST">
         <input name="title" placeholder="Task Title" required>
@@ -23,6 +32,8 @@
         <a href="/tasks/delete/{{ t.id }}" class="btn btn-danger">Delete</a>
     </div>
 </div>
+{% else %}
+<p>No tasks found.</p>
 {% endfor %}
 
 {% endblock %}

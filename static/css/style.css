@@ -170,7 +170,6 @@ nav {
         transform: translateY(-2px);
     }
 
-/* Special buttons */
 .btn-danger {
     background: #d9534f;
     color: white;
@@ -262,3 +261,43 @@ footer {
         opacity: 0.5;
         text-decoration: line-through;
     }
+
+/* ===============================
+   SEARCH BAR (NEW)
+================================*/
+.search-form {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 10px;
+}
+
+    .search-form input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #8b7355;
+        background: rgba(20, 15, 10, 0.4);
+        color: #f5e6d3;
+        font-family: "Georgia", serif;
+    }
+
+        .search-form input::placeholder {
+            color: #c9b299;
+        }
+
+    .search-form button {
+        padding: 12px 18px;
+        border: none;
+        border-radius: 6px;
+        background: #d19a52;
+        color: #1a1410;
+        cursor: pointer;
+        font-weight: bold;
+        font-family: "Georgia", serif;
+        transition: 0.3s ease;
+    }
+
+        .search-form button:hover {
+            background: #e0b068;
+            transform: translateY(-2px);
+        }

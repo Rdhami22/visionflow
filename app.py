@@ -22,7 +22,6 @@ def get_db():
 def init_db():
     db = get_db()
 
-    # Create users table if not exists
     db.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,13 +32,21 @@ def init_db():
     );
     """)
 
-    # Ensure email column exists (fix for the no-column error)
     try:
-        db.execute("SELECT email FROM users LIMIT 1;")
-    except sqlite3.OperationalError:
-        db.execute("ALTER TABLE users ADD COLUMN email TEXT;")
+        db.execute("SELECT theme FROM users LIMIT 1;")
+    except:
+        db.execute("ALTER TABLE users ADD COLUMN theme TEXT DEFAULT 'default';")
 
-    # Create tasks table if not exists
+    try:
+        db.execute("SELECT study_goal FROM users LIMIT 1;")
+    except:
+        db.execute("ALTER TABLE users ADD COLUMN study_goal INTEGER DEFAULT 1;")
+
+    try:
+        db.execute("SELECT notifications FROM users LIMIT 1;")
+    except:
+        db.execute("ALTER TABLE users ADD COLUMN notifications INTEGER DEFAULT 0;")
+
     db.execute("""
     CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,7 +57,6 @@ def init_db():
     );
     """)
 
-    # Create rewards table if not exists
     db.execute("""
     CREATE TABLE IF NOT EXISTS rewards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +69,6 @@ def init_db():
     db.commit()
 
 
-# Run DB check once on startup
 init_db()
 
 
@@ -80,7 +85,7 @@ def login_required(route):
 
 
 # -------------------------
-# HOME REDIRECT
+# HOME
 # -------------------------
 @app.route("/")
 def home():
@@ -116,7 +121,7 @@ def login():
         password = request.form["password"]
 
         db = get_db()
-        user = db.execute("SELECT * FROM users WHERE email=? AND password=?", 
+        user = db.execute("SELECT * FROM users WHERE email=? AND password=?",
                           (email, password)).fetchone()
 
         if user:
@@ -151,7 +156,7 @@ def dashboard():
 
     completed = db.execute("SELECT COUNT(*) as c FROM tasks WHERE user_id=? AND completed=1",
                            (session["user_id"],)).fetchone()["c"]
-    total = db.execute("SELECT COUNT(*) as t FROM tasks WHERE user_id=?", 
+    total = db.execute("SELECT COUNT(*) as t FROM tasks WHERE user_id=?",
                        (session["user_id"],)).fetchone()["t"]
 
     progress = int((completed / total) * 100) if total else 0
@@ -160,13 +165,23 @@ def dashboard():
 
 
 # -------------------------
-# TASK ROUTES
+# TASK ROUTES — UPDATED WITH SEARCH
 # -------------------------
 @app.route("/tasks")
 @login_required
 def tasks():
+    q = request.args.get("q", "").lower()
+
     db = get_db()
-    tasks = db.execute("SELECT * FROM tasks WHERE user_id=?", (session["user_id"],)).fetchall()
+
+    if q:
+        tasks = db.execute("""
+            SELECT * FROM tasks
+            WHERE user_id=? AND (LOWER(title) LIKE ? OR LOWER(description) LIKE ?)
+        """, (session["user_id"], f"%{q}%", f"%{q}%")).fetchall()
+    else:
+        tasks = db.execute("SELECT * FROM tasks WHERE user_id=?", (session["user_id"],)).fetchall()
+
     return render_template("tasks.html", tasks=tasks)
 
 
@@ -198,7 +213,7 @@ def edit_task(id):
         db.commit()
         return redirect("/tasks")
 
-    task = db.execute("SELECT * FROM tasks WHERE id=? AND user_id=?", 
+    task = db.execute("SELECT * FROM tasks WHERE id=? AND user_id=?",
                       (id, session["user_id"])).fetchone()
     return render_template("edit_task.html", task=task)
 
@@ -297,6 +312,75 @@ def settings():
     db = get_db()
     user = db.execute("SELECT * FROM users WHERE id=?", (session["user_id"],)).fetchone()
     return render_template("settings.html", user=user)
+
+
+@app.route("/settings/profile", methods=["POST"])
+@login_required
+def update_profile():
+    name = request.form["name"]
+    email = request.form["email"]
+
+    db = get_db()
+    db.execute("UPDATE users SET username=?, email=? WHERE id=?",
+               (name, email, session["user_id"]))
+    db.commit()
+
+    return redirect("/settings")
+
+
+@app.route("/settings/appearance", methods=["POST"])
+@login_required
+def update_appearance():
+    theme = request.form["theme"]
+
+    db = get_db()
+    db.execute("UPDATE users SET theme=? WHERE id=?",
+               (theme, session["user_id"]))
+    db.commit()
+
+    return redirect("/settings")
+
+
+@app.route("/settings/study", methods=["POST"])
+@login_required
+def update_study():
+    goal = request.form["study_goal"]
+
+    db = get_db()
+    db.execute("UPDATE users SET study_goal=? WHERE id=?",
+               (goal, session["user_id"]))
+    db.commit()
+
+    return redirect("/settings")
+
+
+@app.route("/settings/notifications", methods=["POST"])
+@login_required
+def update_notifications():
+    enable = 1 if "notifications" in request.form else 0
+
+    db = get_db()
+    db.execute("UPDATE users SET notifications=? WHERE id=?",
+               (enable, session["user_id"]))
+    db.commit()
+
+    return redirect("/settings")
+
+
+@app.route("/settings/security", methods=["POST"])
+@login_required
+def update_password():
+    new_password = request.form["new_password"].strip()
+
+    if new_password == "":
+        return redirect("/settings")
+
+    db = get_db()
+    db.execute("UPDATE users SET password=? WHERE id=?",
+               (new_password, session["user_id"]))
+    db.commit()
+
+    return redirect("/settings")
 
 
 # -------------------------

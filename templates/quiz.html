@@ -7,11 +7,11 @@
 
     <h1>Interactive Quizzes 🎓</h1>
 
+    <!-- QUIZ SELECTION SCREEN -->
     <div id="quizSelection">
         <h2>Select a Quiz</h2>
 
         <div class="quiz-selection">
-
             {% for q in quizzes %}
             <div class="quiz-card" onclick="startQuiz('{{ q.id }}')">
                 <div class="quiz-icon">{{ q.icon }}</div>
@@ -19,31 +19,28 @@
                 <div class="quiz-questions">{{ q.count }} Questions</div>
             </div>
             {% endfor %}
-
         </div>
     </div>
 
-    <!-- Quiz Container -->
-    <div id="quizContainer" class="quiz-container">
+    <!-- QUIZ QUESTIONS SCREEN -->
+    <div id="quizContainer" class="quiz-container" style="display:none;">
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
         <div class="question-number" id="questionNumber"></div>
         <div class="question-text" id="questionText"></div>
-
         <div class="options" id="optionsContainer"></div>
 
         <button class="btn" onclick="nextQuestion()">Next Question</button>
         <button class="btn btn-back" onclick="backToSelection()">Back</button>
     </div>
 
-    <!-- Results -->
-    <div id="results" class="results">
+    <!-- QUIZ RESULTS -->
+    <div id="results" class="results" style="display:none;">
         <h2>Quiz Results</h2>
 
         <div id="quizTitle" class="quiz-title"></div>
-
         <div class="score-display" id="scoreDisplay"></div>
         <div class="score-message" id="scoreMessage"></div>
         <p id="pointsEarned" class="points-earned"></p>
@@ -54,5 +51,4 @@
 </div>
 
 <script src="/static/js/quiz.js"></script>
-
 {% endblock %}
