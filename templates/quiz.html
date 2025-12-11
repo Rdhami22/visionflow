@@ -1,21 +1,58 @@
 ﻿{% extends "base.html" %}
+
+{% block title %}Quizzes — VisionFlow{% endblock %}
+
 {% block content %}
-<div class="container" style="text-align:center;">
-    <h1 class="page-title">🧠 Quick Quiz Boost</h1>
+<div class="content-area">
 
-    <h3>How many hours of productive work is ideal daily?</h3>
+    <h1>Interactive Quizzes 🎓</h1>
 
-    <button onclick="check(1)">2 hours</button>
-    <button onclick="check(2)">4–6 hours</button>
-    <button onclick="check(3)">12 hours</button>
+    <div id="quizSelection">
+        <h2>Select a Quiz</h2>
 
-    <p id="result" style="margin-top:20px;font-size:22px;"></p>
+        <div class="quiz-selection">
+
+            {% for q in quizzes %}
+            <div class="quiz-card" onclick="startQuiz('{{ q.id }}')">
+                <div class="quiz-icon">{{ q.icon }}</div>
+                <div class="quiz-name">{{ q.name }}</div>
+                <div class="quiz-questions">{{ q.count }} Questions</div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Quiz Container -->
+    <div id="quizContainer" class="quiz-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="question-number" id="questionNumber"></div>
+        <div class="question-text" id="questionText"></div>
+
+        <div class="options" id="optionsContainer"></div>
+
+        <button class="btn" onclick="nextQuestion()">Next Question</button>
+        <button class="btn btn-back" onclick="backToSelection()">Back</button>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="results">
+        <h2>Quiz Results</h2>
+
+        <div id="quizTitle" class="quiz-title"></div>
+
+        <div class="score-display" id="scoreDisplay"></div>
+        <div class="score-message" id="scoreMessage"></div>
+        <p id="pointsEarned" class="points-earned"></p>
+
+        <button class="btn" onclick="backToSelection()">Take Another Quiz</button>
+    </div>
+
 </div>
 
-<script>
-    function check(a) {
-        if (a === 2) { document.getElementById("result").innerHTML = "Correct 🎉 +5 points (add later)"; }
-        else { document.getElementById("result").innerHTML = "Try again ✍"; }
-    }
-</script>
+<script src="/static/js/quiz.js"></script>
+
 {% endblock %}

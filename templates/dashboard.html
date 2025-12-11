@@ -1,102 +1,67 @@
 ﻿{% extends "base.html" %}
+{% block title %}Dashboard — VisionFlow{% endblock %}
+
 {% block content %}
 
-<style>
-    /* ───────── DASHBOARD LAYOUT ───────── */
-    .dashboard-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 30px;
-        background: linear-gradient(135deg, #f9e9c4, #c49b63);
-        border-radius: 14px;
-        margin-bottom: 25px;
-    }
+<div id="live-clock"></div>
+<div id="calendar-box" class="calendar-box"></div>
 
-    .time-box, .date-box {
-        font-size: 22px;
-        font-weight: bold;
-        color: #4b2e17;
-    }
+<h1>Welcome back, {{ user.username }}!</h1>
 
-    /* ───────── GALLERY ───────── */
-    .moodboard {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
+<div class="dashboard-grid">
 
-        .moodboard img {
-            width: 32%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-        }
+    <!-- Points Card -->
+    <div class="card">
+        <h2>Your Points</h2>
+        <p style="font-size: 2rem; color:#ffd9a3;">{{ user.points }} pts</p>
 
-    /* ───────── STATS ROW ───────── */
-    .stats-grid {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-    }
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ progress }}%;"></div>
+        </div>
 
-    .stat-card {
-        width: 30%;
-        background: #ffffff;
-        padding: 20px;
-        text-align: center;
-        border-radius: 12px;
-        font-size: 20px;
-        font-weight: bold;
-        border-left: 6px solid #a97142;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    }
+        <p>{{ 100 - user.points }} points until next reward!</p>
+    </div>
 
-        .stat-card span {
-            color: #c38b5f;
-            font-size: 26px;
-        }
-</style>
+    <!-- Tasks -->
+    <div class="card">
+        <h2>Today's Tasks</h2>
 
+        {% if tasks %}
+        {% for task in tasks %}
+        <div class="task-item {% if task.completed %}completed{% endif %}">
+            <strong>{{ task.title }}</strong><br>
+            <small>{{ task.description }}</small>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No tasks added yet.</p>
+        {% endif %}
 
-<h1 style="font-size:32px;color:#3c2716;margin-bottom:20px;">
-    Welcome back, <b>{{ username }}</b> ☕
-</h1>
+        <a href="{{ url_for('tasks') }}" class="btn" style="margin-top:1rem;">View All Tasks</a>
+    </div>
 
-<!-- 🕒 TIME + DATE DISPLAY -->
-<div class="dashboard-header">
-    <div class="time-box" id="liveTime">--:--:--</div>
-    <div class="date-box" id="calendarDate">---</div>
+    <!-- Quick Actions -->
+    <div class="card">
+        <h2>Quick Actions</h2>
+        <a href="/tasks" class="btn" style="display:block; margin-bottom:0.5rem;">Add Task</a>
+        <a href="/rewards" class="btn" style="display:block; margin-bottom:0.5rem;">Check Rewards</a>
+        <a href="/quiz" class="btn" style="display:block; margin-bottom:0.5rem;">Take a Quiz</a>
+        <a href="/jokes" class="btn" style="display:block;">Cheer Me Up</a>
+    </div>
+
 </div>
 
-<!-- 🌄 Aesthetic Moodboard -->
-<div class="moodboard">
-    <img src="{{ url_for('static', filename='images/img1.jpg') }}">
-    <img src="{{ url_for('static', filename='images/img2.jpg') }}">
-    <img src="{{ url_for('static', filename='images/img3.jpg') }}">
-</div>
-
-<!-- ⭐ User Stats -->
-<div class="stats-grid">
-    <div class="stat-card">Points<br><span>{{ points }}</span></div>
-    <div class="stat-card">Tasks Completed<br><span>Coming soon</span></div>
-    <div class="stat-card">Streak<br><span>Coming soon</span></div>
-</div>
-
-
-<!-- ───────── LIVE TIME & CALENDAR JS ───────── -->
 <script>
     function updateClock() {
-        let n = new Date();
-        document.getElementById("liveTime").innerText =
-            n.toLocaleTimeString("en-GB");
-
-        document.getElementById("calendarDate").innerText =
-            n.toLocaleDateString("en-GB", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+        const now = new Date();
+        document.getElementById("live-clock").textContent =
+            now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    document.getElementById("calendar-box").textContent =
+        new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
 </script>
 
 {% endblock %}

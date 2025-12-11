@@ -1,23 +1,29 @@
 ﻿{% extends "base.html" %}
-{% block content %}
-<div class="container" style="text-align:center;">
-    <h1 class="page-title">😂 Motivation Jokes</h1>
 
-    <p id="jokeBox" style="font-size:23px;margin-bottom:20px;"></p>
-    <button onclick="newJoke()">Next Joke</button>
+{% block title %}Jokes — VisionFlow{% endblock %}
+
+{% block content %}
+<div class="content-area">
+
+    <h1>Motivational Jokes 😄</h1>
+
+    <div class="card">
+        <button class="btn" onclick="newJoke()">Get Random Joke</button>
+    </div>
+
+    <div id="jokeBox" class="card" style="min-height:100px;">
+        <h2 id="jokeText">Click the button to get a joke!</h2>
+    </div>
+
 </div>
 
 <script>
-    const jokes = [
-        "Why did the student bring a ladder? — Because success was high!",
-        "Your tasks fear YOU.",
-        "Coffee + effort = impossible becomes DONE ☕💪"
-    ];
+const jokes = {{ jokes | tojson }};
 
-    function newJoke() {
-        document.getElementById("jokeBox").innerHTML =
-            jokes[Math.floor(Math.random() * jokes.length)];
-    }
-    newJoke();
+function newJoke() {
+    const random = jokes[Math.floor(Math.random() * jokes.length)];
+    document.getElementById("jokeText").textContent = random;
+}
 </script>
+
 {% endblock %}

@@ -1,21 +1,112 @@
 ﻿{% extends "base.html" %}
+
+{% block title %}Settings — VisionFlow{% endblock %}
+
 {% block content %}
-<div class="settings-card">
+<div class="content-area">
 
-    <h1 class="page-title" style="text-align:center;">⚙ Settings</h1>
+    <h1>Settings</h1>
 
-    <h3>Change Password</h3>
-    <form action="/change_password" method="POST">
-        <input type="password" name="old" placeholder="Current Password" required><br>
-        <input type="password" name="new" placeholder="New Password" required><br>
-        <button>Update Password</button>
-    </form>
+    <div class="settings-grid">
 
-    <hr style="margin:25px 0;">
+        <!-- Navigation -->
+        <div class="settings-nav">
+            <a class="nav-link active" onclick="showSection('profile')">Profile</a>
+            <a class="nav-link" onclick="showSection('appearance')">Appearance</a>
+            <a class="nav-link" onclick="showSection('study')">Study</a>
+            <a class="nav-link" onclick="showSection('notifications')">Notifications</a>
+            <a class="nav-link" onclick="showSection('security')">Security</a>
+        </div>
 
-    <h3>Profile Picture (Coming Soon)</h3>
-    <img class="user-pfp" src="/static/images/default_pfp.jpg">
-    <button disabled style="opacity:.6;">Upload Not Enabled Yet</button>
+        <!-- Content -->
+        <div class="settings-content">
+
+            <!-- Profile Section -->
+            <div id="profile" class="settings-section active">
+                <h2>Profile Settings</h2>
+
+                <form method="POST" action="/settings/profile">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input name="name" value="{{ user.username }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input name="email" value="{{ user.email }}">
+                    </div>
+
+                    <button class="btn">Save</button>
+                </form>
+            </div>
+
+            <!-- Appearance Section -->
+            <div id="appearance" class="settings-section">
+                <h2>Appearance</h2>
+
+                <form method="POST" action="/settings/appearance">
+                    <div class="form-group">
+                        <label>Theme</label>
+                        <select name="theme">
+                            <option value="default" {% if user.theme =='default' %}selected{% endif %}>Default</option>
+                            <option value="dark" {% if user.theme =='dark' %}selected{% endif %}>Dark</option>
+                            <option value="light" {% if user.theme =='light' %}selected{% endif %}>Light</option>
+                        </select>
+                    </div>
+
+                    <button class="btn">Save</button>
+                </form>
+            </div>
+
+            <!-- Study Section -->
+            <div id="study" class="settings-section">
+                <h2>Study Preferences</h2>
+
+                <form method="POST" action="/settings/study">
+                    <div class="form-group">
+                        <label>Daily Goal (hours)</label>
+                        <input type="number" name="study_goal" min="1" max="24" value="{{ user.study_goal }}">
+                    </div>
+
+                    <button class="btn">Save</button>
+                </form>
+            </div>
+
+            <!-- Notifications Section -->
+            <div id="notifications" class="settings-section">
+                <h2>Notifications</h2>
+
+                <form method="POST" action="/settings/notifications">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="notifications" {% if user.notifications %}checked{% endif %}>
+                            Enable Notifications
+                        </label>
+                    </div>
+
+                    <button class="btn">Save</button>
+                </form>
+            </div>
+
+            <!-- Security Section -->
+            <div id="security" class="settings-section">
+                <h2>Security</h2>
+
+                <form method="POST" action="/settings/security">
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" name="new_password">
+                    </div>
+
+                    <button class="btn btn-danger">Update Password</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
 
 </div>
+
+<script src="/static/js/settings.js"></script>
+
 {% endblock %}

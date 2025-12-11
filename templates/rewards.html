@@ -1,18 +1,36 @@
 ﻿{% extends "base.html" %}
+{% block title %}Rewards — VisionFlow{% endblock %}
+
 {% block content %}
-<div class="container" style="text-align:center;">
-    <h1 class="page-title">🎁 Rewards Center</h1>
+<h1>Your Rewards</h1>
 
-    <h2>Your Points: <span style="color:#a06a39;font-size:30px;">{{ points }}</span></h2>
+<div class="card">
+    <h2>Total Points</h2>
 
-    <div style="width:60%;margin:auto;background:#fff;border-radius:10px;padding:20px;">
-        <h3>Reward Unlock at 100 pts</h3>
+    <p style="font-size:2rem; color:#ffd9a3;">{{ user.points }} pts</p>
 
-        {% if points >= 100 %}
-        <button onclick="alert('Reward redeemed 🎉')" style="margin-top:10px;">Redeem Reward</button>
-        {% else %}
-        <p style="opacity:.7;">Earn {{ 100 - points }} more points ✨</p>
-        {% endif %}
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
     </div>
+
+    <p>{{ 100 - user.points }} points until next reward</p>
+
+    {% if user.points >= 100 %}
+    <form action="/rewards/claim" method="POST">
+        <button class="btn btn-success">Claim Reward 🎉</button>
+    </form>
+    {% else %}
+    <button class="btn" disabled style="opacity:0.5;">Not enough points</button>
+    {% endif %}
 </div>
+
+<h2>Reward History</h2>
+
+{% for r in rewards %}
+<div class="task-item completed">
+    <strong>{{ r.reward_text }}</strong><br>
+    <small>{{ r.date_claimed }}</small>
+</div>
+{% endfor %}
+
 {% endblock %}
